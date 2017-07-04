@@ -1,10 +1,7 @@
 package server;
 
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 /**
@@ -15,29 +12,23 @@ public class sqlServer {
     public static final String USER = "root";
     public static final String PASSWORD = "root";
 
-
     public static void main(String[] args) {
-
-        Connection connection;
-        Driver driver;
-
         try {
-
-            driver = new com.mysql.cj.jdbc.Driver();
+            Driver driver = new com.mysql.cj.jdbc.Driver();
             DriverManager.registerDriver(driver);
-
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            if (!connection.isClosed()) {
-                System.out.println("V base");
-            }
-            connection.close();
-            if (connection.isClosed()) {
-                System.out.println("Vishel is base");
-            }
         }catch (SQLException e){
             System.out.println("ошибка драйвера SQL");
             return;
         }
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             Statement statement = connection.createStatement()){
+            System.out.println(connection.isClosed());
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
 
     }
 }
